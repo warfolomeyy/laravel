@@ -17,12 +17,14 @@ class Post extends Model
         'excerpt',
         'body',
         'is_published',
+        'published_at',
         'user_id'
 
     ];
 
     protected $casts = [
         'is_published' => 'boolean',
+        'published_at' => 'datetime',
     ];
 
     public function author() :BelongsTo{
