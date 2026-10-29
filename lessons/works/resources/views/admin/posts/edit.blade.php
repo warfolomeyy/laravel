@@ -5,7 +5,7 @@
 @section('content')
     <h1 class="text-xl font-bold">Редактирование поста</h1>
 
-    <form class="glass rounded-2xl p-6 border border-white/10 space-y-5 flex flex-col gap-3" action="{{ route('posts.update', $post->id) }}" method="POST">
+    <form class="glass rounded-2xl p-6 border border-white/10 space-y-5 flex flex-col gap-3" action="{{ route('admin.posts.update', $post->id) }}" method="POST">
         @csrf
         @method('PUT')
 
@@ -41,7 +41,7 @@
         </div>
 
         <div class="flex items-center justify-end gap-2">
-            <a href="{{ route('posts.index') }}" class="btn btn-outline cursor-pointer">Отмена</a>
+            <a href="{{ route('admin.posts.index') }}" class="btn btn-outline cursor-pointer">Отмена</a>
             <button class="btn btn-primary px-2 py-1 cursor-pointer rounded-xl" type="submit">Обновить</button>
         </div>
     </form>
