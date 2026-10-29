@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -22,32 +22,33 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         <div class="flex items-center gap-3">
             <button id="asideBtn" class="md:hidden btn btn-outline" aria-label="Меню">
-                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none"><path d="M4 6H20M4 12H20M4 18H20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
             </button>
-            <a href="#" class="flex items-center gap-2">
-                <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl accent text-gray-900 font-black">A</span>
+            <a href="{{ route('admin.posts.index') }}" class="flex items-center gap-2">
+                <span class="inline-flex h-9 w-9 items-center justify-center accent text-gray-900 font-black">A</span>
                 <span class="font-semibold tracking-wide">Admin</span>
             </a>
         </div>
         <div class="flex items-center gap-3">
-            <span class="hidden sm:inline text-sm text-gray-400">Привет, Admin</span>
+            <span class="hidden sm:inline text-sm text-gray-400">Привет, Админ</span>
             <button class="btn btn-outline">Выйти</button>
         </div>
     </div>
 </header>
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 grid grid-cols-1 md:grid-cols-12 gap-6">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 grid grid-cols-1 md:grid-cols-12 gap-8">
     <aside id="aside" class="md:col-span-3 lg:col-span-2 glass rounded-2xl p-3 border border-white/10 md:block hidden">
         <nav class="space-y-1">
-            <a href="posts-list.html" class="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-white bg-white/5">
-                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <a href="{{ route('admin.posts.index') }}" class="flex items-center gap-3 rounded-xl px-3 py-2 text-sm bg-white/5">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none"><path d="M4 6H16M4 12H16M4 18H10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
                 Посты
             </a>
             <a href="#" class="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/5">
-                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 7v10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none"><path d="M5 12H19M12 7V17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
                 Категории
             </a>
         </nav>
     </aside>
+
     <main class="md:col-span-9 lg:col-span-10 space-y-6">
         @yield('content')
     </main>

@@ -5,20 +5,31 @@
 @section('content')
     <h1 class="text-xl font-bold">Редактирование поста</h1>
 
-    <form class="glass rounded-2xl p-6 border border-white/10 space-y-5 flex flex-col gap-3" action="{{ route('admin.posts.update', $post->id) }}" method="POST">
+    <form class="glass rounded-2xl p-6 border border-white/10 space-y-5 flex flex-col gap-3" action="{{ route('admin.posts.update', $post->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
+
+        <div class="flex flex-col">
+            <label class="label">Изображение</label>
+            <input type="file" name="image" accept="image/*" class="mt-1 block w-full rounded border border-white/10 bg-gray-900/40 p-2 cursor-pointer">
+            @error('image') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
+        </div>
+
+        @if(isset($post) && $post->image_url)
+            <div class="mt-3">
+                <p class="text-sm text-gray-400">Текущее изображение</p>
+                <img src="{{ $post->image_url }}" alt="" class="mt-2 h-32 rounded object-cover" />
+                <label class="mt-2 inline-flex items-center gap-2 text-sm">
+                    <input type="checkbox" name="remove_image" value="1">
+                    Удалить изображение
+                </label>
+            </div>
+        @endif
 
         <div class="flex flex-col">
             <label class="label">Заголовок</label>
             <input class="input border px-3 py-1 rounded-xl" placeholder="Название поста" name="title" value="{{ old('title', $post->title) }}" />
             @error('title') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
-        </div>
-
-        <div class="flex flex-col">
-            <label class="label">Ссылка</label>
-            <input class="input border px-3 py-1 rounded-xl" placeholder="Ссылка" name="slug" value="{{ old('slug', $post->slug) }}" />
-            @error('slug') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
         </div>
 
         <div class="flex flex-col">

@@ -13,13 +13,13 @@ class Post extends Model
 
     protected $fillable = [
         'title',
+        'image',
         'slug',
         'excerpt',
         'body',
         'is_published',
         'published_at',
-        'user_id'
-
+        'user_id',
     ];
 
     protected $casts = [
@@ -27,7 +27,13 @@ class Post extends Model
         'published_at' => 'datetime',
     ];
 
-    public function author() :BelongsTo{
+    public function author(): BelongsTo
+    {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function getImageUrlAttribute(): ?string
+    {
+        return $this->image ? asset('storage/' . $this->image) : null;
     }
 }

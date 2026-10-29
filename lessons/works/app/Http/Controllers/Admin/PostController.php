@@ -41,7 +41,14 @@ class PostController extends Controller
             'is_published' => 'nullable',
             'published_at' => 'nullable',
             'user_id' => 'nullable',
+            'image' => ['nullable', 'image', 'mimes:jpeg,jpg,png', 'max:2048']
         ]);
+
+
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('posts', 'public');
+        }
+
 
         $slugBase = Str::slug($data['title']);
         $slug = $slugBase . '-' . rand(1, 999999);
@@ -83,7 +90,24 @@ class PostController extends Controller
             'is_published' => 'nullable',
             'published_at' => 'nullable',
             'user_id' => 'nullable',
+            'image' => ['nullable', 'image', 'mimes:jpeg,jpg,png', 'max:2048'],
+            'remove' => ['sometime', 'boolean']
+
         ]);
+
+        if ($request->boolean('remove_image') && $post->image) {
+            Storage::disk('public')->delete($post->image);
+            $data['image'] = null;
+        }
+
+        if ($request->hasFile('image')) {
+            if ($post->image) {
+                Storage::disk('public')->delete($post->image);
+            }
+            $data['image'] = $request->file('image')->store('posts', 'public');
+        }
+
+
 
         $data['is_published'] =  $request->has('is_published') == 'on';
         $data['published_at'] =  $request->has('is_published') ? now() : null;
