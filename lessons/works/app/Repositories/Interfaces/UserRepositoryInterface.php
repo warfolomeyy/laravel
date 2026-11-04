@@ -6,7 +6,7 @@ use App\Enums\UserRole;
 use App\Models\User;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-interface userRepositoryInterface
+interface UserRepositoryInterface
 {
     public function create(array $data): User;
 
