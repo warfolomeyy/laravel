@@ -7,6 +7,8 @@ use App\Services\Interfaces\AuthServiceInterface;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\RegisterRequest;
 
 class AuthController extends Controller
 {
@@ -22,16 +24,15 @@ class AuthController extends Controller
         return view('auth.register');
     }
 
-    public function register(Request $request): RedirectResponse
+    public function register(RegisterRequest $request): RedirectResponse
     {
         $this->auth->register($request->validated());
 
-        $this->auth-attemptLogin($request->email, $request->password);
+        $this->auth->attemptLogin($request->email, $request->password);
 
         $request->session()->regenerate();
 
-        return redirect()->route('admin.posts.index');
-
+        return redirect()->route('verification.notice');
     }
 
     public function login(LoginRequest $request): RedirectResponse

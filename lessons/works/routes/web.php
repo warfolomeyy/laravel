@@ -8,11 +8,7 @@ use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\ResetPasswordController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', fn () => redirect()->route('blog.index'))->name('index');
-
-Route::prefix('admin')->as('admin.')->middleware(['auth', 'role:admin'])->group(function () {
-    Route::resource('posts', AdminPostController::class);
-});
+Route::get('/', fn () => redirect()->route('admin.posts.index'))->name('index');
 
 Route::prefix('admin')->as('admin.')->middleware(['auth', 'role:admin'])->group(function () {
     Route::resource('posts', AdminPostController::class);
@@ -34,3 +30,27 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/email/verify', function () {
+        return view('auth.verify-email');
+    })->name('verification.notice');
+
+    Route::get('/email/verify/{id}/{hash}', function (\Illuminate\Foundation\Auth\EmailVerificationRequest $request) {
+        $request->fulfill();
+
+        return redirect('/');
+    })->middleware(['signed', 'throttle:6,1'])->name('verification.verify');
+
+    Route::post('/email/verification-notification', function (\Illuminate\Http\Request $request) {
+        $request->user()->sendEmailVerificationNotification();
+
+        return back()->with('message', 'Ссылка для подтверждения отправлена!');
+    })->middleware('throttle:6,1')->name('verification.send');
+});
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/admin', function () {
+        return 'Админка';
+    });
+});

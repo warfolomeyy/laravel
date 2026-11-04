@@ -14,7 +14,7 @@
         </a>
 
         <nav class="flex items-center gap-6 text-sm text-gray-300">
-            <a href="{{ route('blog.index') }}" class="hover:text-white transition">Посты</a>
+            <a href="{{ route('admin.posts.index') }}" class="hover:text-white transition">Посты</a>
             <a href="#" class="hover:text-white transition">О проекте</a>
         </nav>
     </div>

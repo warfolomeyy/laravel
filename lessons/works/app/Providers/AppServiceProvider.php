@@ -10,6 +10,7 @@ use App\Services\Interfaces\AuthServiceInterface;
 use App\Services\Interfaces\UserServiceInterface;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
+use App\Repositories\UserRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
