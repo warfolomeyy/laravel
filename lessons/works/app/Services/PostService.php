@@ -3,95 +3,55 @@
 namespace App\Services;
 
 use App\Models\Post;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
+use App\Repositories\Interfaces\PostRepositoryInterface;
+use App\Services\Interfaces\PostServiceInterface;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Str;
-
-class PostService
+class PostService implements PostServiceInterface
 {
-    public function create(array $data): Post
+    public function __construct(
+        private PostRepositoryInterface $postRepository
+    )
     {
-        return DB::transaction(function () use ($data) {
-            $image = $data['image'] ?? null;
-            unset($data['image'], $data['remove_image']);
-
-            $isPublished = (bool)$data['is_published'] ?? false;
-            $data['is_published'] = $isPublished;
-            $data['published_at'] = $isPublished ? now() : null;
-
-            $slugBase = Str::slug($data['title']);
-            $slug = $slugBase . '-' . rand(1, 999999);
-            $data['slug'] = $slug;
-
-
-
-            $post = Post::create($data);
-
-            if ($image) {
-                $path = $image->store('posts', 'public');
-                $post->image = $path;
-                $post->save();
-            }
-
-            return $post;
-        });
     }
 
-    public function update(Post $post, array $data): Post
+    public function getAllApi(): Collection
     {
-        return DB::transaction(function () use ($post, $data) {
-            $newImage = $data['image'] ?? null;
-            $removeImage = (bool)($data['remove_image'] ?? false);
-            unset($data['image'], $data['remove_image']);
-
-            $wasPublished = (bool)$post->is_published;
-            $nowPublished = (bool)($data['published_at'] ?? $wasPublished);
-            $data['is_published'] = $wasPublished;
-
-            if(!$wasPublished && $nowPublished){
-                $data['published_at'] = now();
-            } elseif ($wasPublished && !$nowPublished) {
-                $data['published_at'] = null;
-            }
-
-
-
-
-
-            $slugBase = Str::slug($data['title']);
-            $slug = $slugBase . '-' . rand(1, 999999);
-            $data['slug'] = $slug;
-
-
-
-
-            $post->update($data);
-
-            if ($removeImage && $post->image) {
-                Storage::disk('public')->delete($post->image);
-                $post->image = null;
-            }
-
-            if ($newImage) {
-                if ($post->image) {
-                    Storage::disk('public')->delete($post->image);
-                }
-                $post->image = $newImage->store('posts', 'public');
-            }
-
-            $post->save();
-
-            return $post;
-        });
+        return $this->postRepository->allApi();
     }
 
-    public function delete(Post $post): void {
-        DB::transaction(function () use ($post) {
-            if ($post->image){
-                Storage::disk('public')->delete($post->image);
-            }
-            $post->delete();
-        });
+    public function getByIdApi(int $id): ?Post
+    {
+        return $this->postRepository->findApi($id);
     }
 
+    public function createApi(array $data): Post
+    {
+        $slug = Str::slug($data["title"]);
+        $data['slug'] = $slug;
+        return $this->postRepository->createApi($data);
+    }
+
+    public function updateApi(int $id, array $data): ?Post
+    {
+
+
+        $post = $this->postRepository->findApi($id);
+        if (!$post) {
+            return null;
+        }
+        $slug = Str::slug($data["title"]);
+        $data['slug'] = $slug;
+        return $this->postRepository->updateApi($post, $data);
+    }
+
+    public function deleteApi(int $id): bool
+    {
+        $post = $this->postRepository->findApi($id);
+        if (!$post) {
+            return false;
+        }
+
+        return $this->postRepository->deleteApi($post);
+    }
 }

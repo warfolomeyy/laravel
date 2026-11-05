@@ -5,6 +5,7 @@ namespace App\Repositories\Interfaces;
 
 use App\Models\Post;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 interface PostRepositoryInterface
 {
@@ -14,4 +15,13 @@ interface PostRepositoryInterface
 
     public function getPaginated(int $perPage): LengthAwarePaginator;
 
+    public function allApi(): Collection;
+
+    public function findApi(int $id): ?Post;
+
+    public function createApi(array $data): Post;
+
+    public function updateApi(Post $post, array $data): Post;
+
+    public function deleteApi(Post $post): bool;
 }
