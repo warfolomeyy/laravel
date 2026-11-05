@@ -1,0 +1,19 @@
+FROM php:8.5-fpm
+
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    libpq-dev \
+    zip \
+    unzip
+
+
+RUN pecl install redis && docker-php-ext-enable redis
+RUN docker-php-ext-install pdo pdo_pgsql pgsql
+
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+WORKDIR /var/www/html
