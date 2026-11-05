@@ -2,10 +2,9 @@
 
 namespace App\Repositories\Interfaces;
 
-
 use App\Models\Post;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 
 interface PostRepositoryInterface
 {
@@ -23,5 +22,11 @@ interface PostRepositoryInterface
 
     public function updateApi(Post $post, array $data): Post;
 
-    public function deleteApi(Post $post): bool;
+    public function softDelete(Post $post): bool;
+
+    public function restore(int $id): ?Post;
+
+    public function forceDelete(int $id): bool;
+
+    public function getTrashed(): Collection;
 }

@@ -1,10 +1,8 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\API\AuthController;
-use App\Http\Controllers\API\PostController;
-
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\PostController;
 
 Route::prefix('auth')->group(function (): void {
     Route::post('register', [AuthController::class, 'register']);
@@ -16,10 +14,9 @@ Route::prefix('auth')->group(function (): void {
     });
 });
 
-
-
 Route::middleware('auth:sanctum')->group(function (): void {
-    // Route::apiResource('posts', PostController::class)->except(['create', 'edit']);
-    Route::put('posts/{post}', [PostController::class, 'update'])->can('update', 'post');
-    Route::delete('posts/{post}', [PostController::class, 'destroy'])->can('delete', 'post');
+    Route::apiResource('posts', PostController::class)->except('create', 'edit');
+    Route::post('/posts/{id}/restore', [PostController::class, 'restore']);
+    Route::delete('/posts/{id}/force', [PostController::class, 'forceDelete']);
+    Route::get('/posts/trashed', [PostController::class, 'trashed']);
 });
