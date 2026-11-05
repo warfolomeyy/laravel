@@ -1,56 +1,36 @@
 services:
-    laravel.test:
+    app:
         build:
-            context: './vendor/laravel/sail/runtimes/8.5'
+            context: .
             dockerfile: Dockerfile
-            args:
-                WWWGROUP: '${WWWGROUP}'
-        image: 'sail-8.5/app'
-        extra_hosts:
-            - 'host.docker.internal:host-gateway'
-        ports:
-            - '${APP_PORT:-80}:80'
-            - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
-        environment:
-            WWWUSER: '${WWWUSER}'
-            LARAVEL_SAIL: 1
-            XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
-            XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
-            IGNITION_LOCAL_SITES_PATH: '${PWD}'
+        container_name: laravel_app
+        restart: unless-stopped
+        working_dir: /var/www/html
         volumes:
-            - '.:/var/www/html'
+            - .:/var/www/html
         networks:
-            - sail
+            - app-network
         depends_on:
             - pgsql
+
     pgsql:
-        image: 'postgres:18-alpine'
-        ports:
-            - '${FORWARD_DB_PORT:-5432}:5432'
+        image: postgres:16-alpine
+        container_name: laravel_postgres
+        restart: unless-stopped
         environment:
-            PGPASSWORD: '${DB_PASSWORD:-secret}'
-            POSTGRES_DB: '${DB_DATABASE}'
-            POSTGRES_USER: '${DB_USERNAME}'
-            POSTGRES_PASSWORD: '${DB_PASSWORD:-secret}'
+            POSTGRES_DB: ${DB_DATABASE}
+            POSTGRES_USER: ${DB_USERNAME}
+            POSTGRES_PASSWORD: ${DB_PASSWORD}
+        ports:
+            - "5432:5432"
         volumes:
-            - 'sail-pgsql:/var/lib/postgresql'
-            - './vendor/laravel/sail/database/pgsql/create-testing-database.sql:/docker-entrypoint-initdb.d/10-create-testing-database.sql'
+            - pgsql-data:/var/lib/postgresql/data
         networks:
-            - sail
-        healthcheck:
-            test:
-                - CMD
-                - pg_isready
-                - '-q'
-                - '-d'
-                - '${DB_DATABASE}'
-                - '-U'
-                - '${DB_USERNAME}'
-            retries: 3
-            timeout: 5s
+            - app-network
+
 networks:
-    sail:
+    app-network:
         driver: bridge
+
 volumes:
-    sail-pgsql:
-        driver: local
+    pgsql-data:
